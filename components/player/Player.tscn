@@ -1,0 +1,119 @@
+[gd_scene load_steps=8 format=3 uid="uid://b31235e0u2xgr"]
+
+[ext_resource type="Script" uid="uid://dlqrgsuf6e0ms" path="res://components/player/player.gd" id="1_7504e"]
+[ext_resource type="Script" uid="uid://bollm4j4b3kdp" path="res://components/player/hud.gd" id="2_lt7w0"]
+[ext_resource type="Theme" uid="uid://3pf2keh4y56m" path="res://components/player/hud.tres" id="2_yxufj"]
+[ext_resource type="Script" uid="uid://cek5ymdhdnssd" path="res://components/player/hand.gd" id="4_eglpv"]
+[ext_resource type="PackedScene" uid="uid://tn2mdxcmpj2c" path="res://components/weapons/pistol/Pistol.tscn" id="4_xh4xr"]
+[ext_resource type="Script" uid="uid://c7xjn6dm52nvx" path="res://components/player/view_model.gd" id="6_lbsqm"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yrsj2"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_7504e")
+SetMaxHealth = 500.0
+SetHealth = 200.0
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("2_lt7w0")
+
+[node name="Health Bar" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="HealthLeft" type="ProgressBar" parent="Hud/Health Bar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_right = 166.0
+offset_bottom = 27.0
+grow_horizontal = 2
+theme = ExtResource("2_yxufj")
+value = 100.0
+show_percentage = false
+
+[node name="HealthRight" type="ProgressBar" parent="Hud/Health Bar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -166.0
+offset_bottom = 27.0
+grow_horizontal = 2
+theme = ExtResource("2_yxufj")
+value = 100.0
+fill_mode = 1
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="Hud/Health Bar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -144.0
+offset_right = 144.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "VALUE"
+horizontal_alignment = 1
+
+[node name="Velocity" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="meter" type="ProgressBar" parent="Hud/Velocity"]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+show_percentage = false
+
+[node name="value" type="Label" parent="Hud/Velocity"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_yrsj2")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Eye" type="Camera3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.683237, -0.104416)
+fov = 90.0
+
+[node name="Weapon Rig" type="Node3D" parent="Pivot/Eye"]
+
+[node name="Pistol" parent="Pivot/Eye/Weapon Rig" instance=ExtResource("4_xh4xr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.3, -0.4)
+
+[node name="Projectile Start Point" type="Marker3D" parent="Pivot/Eye"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.740192)
+
+[node name="ViewModel" type="SubViewportContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Hand" type="SubViewport" parent="ViewModel"]
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 0
+script = ExtResource("4_eglpv")
+
+[node name="ViewModel2" type="Camera3D" parent="ViewModel/Hand" node_paths=PackedStringArray("MAIN_CAMERA")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.683237, -0.104416)
+fov = 46.2
+script = ExtResource("6_lbsqm")
+MAIN_CAMERA = NodePath("../../../Pivot/Eye")

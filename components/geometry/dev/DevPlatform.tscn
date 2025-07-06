@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://wfw5cj2cw06q"]
+
+[ext_resource type="Texture2D" uid="uid://du7q0guvbt6fk" path="res://icon.svg" id="1_5bnfw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7dfgy"]
+size = Vector3(500, 0.1, 500)
+
+[sub_resource type="QuadMesh" id="QuadMesh_7dfgy"]
+size = Vector2(500, 500)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q0mhc"]
+albedo_color = Color(0.4928, 0.56, 0.56, 1)
+albedo_texture = ExtResource("1_5bnfw")
+
+[node name="DevPlatform" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000519961, 0)
+shape = SubResource("BoxShape3D_7dfgy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_7dfgy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q0mhc")

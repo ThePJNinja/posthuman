@@ -1,0 +1,12 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://3pf2keh4y56m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_evye4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qybxc"]
+bg_color = Color(0.580392, 0.227451, 0.278431, 1)
+corner_detail = 1
+
+[resource]
+ProgressBar/constants/outline_size = 0
+ProgressBar/styles/background = SubResource("StyleBoxEmpty_evye4")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_qybxc")
