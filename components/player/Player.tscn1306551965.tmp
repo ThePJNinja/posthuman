@@ -9,6 +9,16 @@
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_7504e")
+FOV = null
+JumpVelocity = null
+SprintSpeed = null
+WalkSpeed = null
+Acceleration = null
+Friction = null
+SensX100k = null
+AirAccelMultiplier = null
+NewGravityStrength = null
+OverrideGravity = null
 SetMaxHealth = 500.0
 SetHealth = 200.0
 

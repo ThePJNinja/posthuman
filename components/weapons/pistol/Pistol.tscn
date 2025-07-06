@@ -1,20 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://tn2mdxcmpj2c"]
+[gd_scene load_steps=3 format=3 uid="uid://tn2mdxcmpj2c"]
 
-[ext_resource type="Shader" uid="uid://cavbnk5v7rprw" path="res://components/weapons/pistol/Pistol.gdshader" id="1_qhp6b"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7psvq"]
-render_priority = 0
-shader = ExtResource("1_qhp6b")
-shader_parameter/fov = 77.0
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_wfo38"]
-material = SubResource("ShaderMaterial_7psvq")
-top_radius = 0.125
-bottom_radius = 0.125
-height = 0.5
+[ext_resource type="Script" uid="uid://c3cf7flc38v6f" path="res://components/weapons/init_weapon.gd" id="1_qhp6b"]
+[ext_resource type="Resource" uid="uid://vdkin6tgxhxf" path="res://components/weapons/pistol/pistol.tres" id="2_7psvq"]
 
 [node name="Pistol" type="Node3D"]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("CylinderMesh_wfo38")
+script = ExtResource("1_qhp6b")
+WEAPON_RES = ExtResource("2_7psvq")
