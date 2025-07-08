@@ -18,4 +18,4 @@ func update() -> void:
 	var velocity: float = roundf($"..".velocity.length()*100)/100
 	$Velocity/meter.value = velocity
 	$Velocity/value.text = str(velocity)
-	print(velocity)
+	#print(velocity)

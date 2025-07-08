@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://dlqrgsuf6e0ms" path="res://components/player/player.gd" id="1_7504e"]
 [ext_resource type="Script" uid="uid://bollm4j4b3kdp" path="res://components/player/hud.gd" id="2_lt7w0"]
 [ext_resource type="Theme" uid="uid://3pf2keh4y56m" path="res://components/player/hud.tres" id="2_yxufj"]
-[ext_resource type="PackedScene" uid="uid://tn2mdxcmpj2c" path="res://components/weapons/pistol/Pistol.tscn" id="4_xh4xr"]
+[ext_resource type="PackedScene" uid="uid://tn2mdxcmpj2c" path="res://components/weapons/pistol/pistol.tscn" id="4_xh4xr"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yrsj2"]
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_7504e")
 SetMaxHealth = 500.0
-SetHealth = 200.0
+SetHealth = 500.0
 
 [node name="Hud" type="CanvasLayer" parent="."]
 script = ExtResource("2_lt7w0")
@@ -70,17 +70,18 @@ offset_bottom = 40.0
 
 [node name="meter" type="ProgressBar" parent="Hud/Velocity"]
 layout_mode = 0
-offset_right = 13.0
-offset_bottom = 118.0
+offset_right = 35.0
+offset_bottom = 120.0
 fill_mode = 2
 show_percentage = false
 
 [node name="value" type="Label" parent="Hud/Velocity"]
-layout_mode = 0
+layout_mode = 1
 offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="Update" type="Timer" parent="Hud"]
+wait_time = 0.5
 autostart = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

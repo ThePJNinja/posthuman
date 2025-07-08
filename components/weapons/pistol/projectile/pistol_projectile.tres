@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Projectile" load_steps=4 format=3 uid="uid://c6iub6xrphs1q"]
+
+[ext_resource type="Script" uid="uid://ccvn6javutuan" path="res://components/weapons/projectile.gd" id="1_68din"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_68din"]
+
+[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_lkji8"]
+
+[resource]
+script = ExtResource("1_68din")
+name = &"Magnar Slug"
+damage = 0.0
+speed = 0.0
+weight = 0.0
+collisionShape = SubResource("SphereShape3D_68din")
+mesh = SubResource("PlaceholderMesh_lkji8")
+metadata/_custom_type_script = "uid://ccvn6javutuan"
