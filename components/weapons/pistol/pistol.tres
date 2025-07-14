@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_pp51x")
 name = &"Magnor"
+type = 3
 projectile = ExtResource("3_4ibiu")
 position = Vector3(0.2, -0.3, -0.4)
 rotation = Vector3(0, 90, 0)

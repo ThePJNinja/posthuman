@@ -1,6 +1,10 @@
 extends CharacterBody3D
 
-@export var StartingGunScene: PackedScene
+var menu := false
+signal MenuOn
+signal MenuOff
+
+@export var StartingWeapon: Weapons
 @export var FOV := 90.0
 
 @export_category("Movement")
@@ -9,30 +13,37 @@ extends CharacterBody3D
 @export var WalkSpeed := 5.0
 @export var Acceleration := 10.0
 @export var Friction := 50.0
-@export var SensX100k := 200.0
 @export var AirAccelMultiplier := 2.0
+var Speed: float
 @export var NewGravityStrength := 9.8
 @export var OverrideGravity := false
+var Gravity: Vector3
+@export var SensX100k := 200.0
+var Sensitivity: float
 
 @export_category("Status")
 @export var SetMaxHealth := 100.0
 @export var SetHealth := 100.0
-var MaxHealth := 100
-var Health := 100
-var Hud: CanvasLayer
+var MaxHealth: float
+var Health: float
 
-var StartTime: int
-var Speed: float
-var Gravity: Vector3
-var Sensitivity: float
-@onready var Pivot := $Pivot
-@onready var Eye := $Pivot/Eye
-@onready var ProjectileStartPoint := $"Pivot/Eye/Projectile Start Point"
-
-
-var Timer1: Timer
+@onready var Hud := %Hud
+@onready var Pivot := %Pivot
+@onready var Eye := %Pivot/Eye
+@onready var ProjectileStartPoint := %"Pivot/Eye/Projectile Start Point"
 
 func _ready() -> void:
+	activate()
+
+func activate() -> void:
+	
+	# Set Camera
+	Eye.make_current()
+	Hud.show()
+	
+	# Set Health Values
+	set_health_and_max(SetHealth, SetMaxHealth)
+	
 	# Set Gravity
 	var original_gravity = get_gravity()
 	if OverrideGravity:
@@ -44,7 +55,6 @@ func _ready() -> void:
 	Sensitivity = SensX100k/100000
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
 
 func _input(event: InputEvent) -> void:
 	# Mouse control
@@ -56,19 +66,15 @@ func _input(event: InputEvent) -> void:
 		eyeRotation.x = clamp(eyeRotation.x, -PI/2, PI/2)
 		Eye.rotation = eyeRotation
 
-func _process(delta: float) -> void:
-	set_health_max(SetMaxHealth)
-	set_health(SetHealth)
-	if (int(Time.get_unix_time_from_system()) % 1000 == 0):
-		$Hud/Velocity/value.text = str(velocity.length())
-		print(velocity.length())
+func _process(_delta: float) -> void:
+	set_health_and_max(Health, MaxHealth)
+	
 	if Input.is_action_just_pressed("Menu"):
-		if (Input.mouse_mode == Input.MOUSE_MODE_CAPTURED):
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			print("Menu on")
-		elif (Input.mouse_mode == Input.MOUSE_MODE_VISIBLE):
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			print("Menu off")
+		if menu:
+			menu_off()
+		else:
+			menu_on()
+		menu = !menu
 	
 	#var prevFov = Eye.fov
 	#var aimFov = clampf(FOV + velocity.length(), 1.0, 180)
@@ -118,17 +124,22 @@ func _physics_process(delta: float) -> void:
 			if (accel_speed > add_speed):
 				accel_speed = add_speed
 			velocity += accel_speed * direction
-		
 	
 	move_and_slide()
 
-func set_health_max(value: float) -> void:
-	MaxHealth = value
-	$"Hud/Health Bar/HealthLeft".max_value = value
-	$"Hud/Health Bar/HealthRight".max_value = value 
-
 func set_health(value: float) -> void:
+	set_health_and_max(value, MaxHealth)
+
+func set_health_and_max(value: float, max_value: float) -> void:
 	Health = value
-	$"Hud/Health Bar/HealthLeft".set_value(value)
-	$"Hud/Health Bar/HealthRight".set_value(value)
-	$"Hud/Health Bar/HealthLabel".text = str(value) + "/" + str(MaxHealth)
+	MaxHealth = max_value
+	Hud.set_health(value, max_value)
+
+func menu_on() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	print("Menu on")
+	Hud.hide()
+	MenuOn.emit()
+
+func menu_off() -> void:
+	MenuOff.emit()
