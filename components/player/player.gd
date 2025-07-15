@@ -1,6 +1,5 @@
 extends CharacterBody3D
 
-var menu := false
 signal MenuOn
 signal MenuOff
 
@@ -69,13 +68,6 @@ func _input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	set_health_and_max(Health, MaxHealth)
 	
-	if Input.is_action_just_pressed("Menu"):
-		if menu:
-			menu_off()
-		else:
-			menu_on()
-		menu = !menu
-	
 	#var prevFov = Eye.fov
 	#var aimFov = clampf(FOV + velocity.length(), 1.0, 180)
 	#var nuFovAdd = clampf(aimFov - prevFov, -0.1, 0.1);
@@ -136,10 +128,9 @@ func set_health_and_max(value: float, max_value: float) -> void:
 	Hud.set_health(value, max_value)
 
 func menu_on() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	print("Menu on")
 	Hud.hide()
 	MenuOn.emit()
 
 func menu_off() -> void:
+	Hud.show()
 	MenuOff.emit()

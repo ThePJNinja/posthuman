@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwnfyr1vqhvic"]
+
+[ext_resource type="Script" uid="uid://rfd3fccsob0g" path="res://level/menu/main_menu.gd" id="1_0q58x"]
+
+[node name="MainMenu" type="CanvasLayer"]
+script = ExtResource("1_0q58x")
+MenuName = &"Main Menu"
+metadata/_custom_type_script = "uid://im6p8ln1nrf6"
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -51.5
+offset_top = -85.5
+offset_right = 51.5
+offset_bottom = 85.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Resume" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Resume
+"
+
+[node name="New Game" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "New Game
+"
+
+[node name="Load Game" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Load Game
+"
+
+[node name="Options" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Options
+"
+
+[node name="Test Map" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Test Map"
+
+[node name="Quit" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"

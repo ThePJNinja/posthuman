@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6ypc1i6gi4cg"]
+
+[ext_resource type="Script" uid="uid://8s5bocy18iuv" path="res://level/menu/options.gd" id="1_5ogv1"]
+
+[node name="Options" type="CanvasLayer"]
+script = ExtResource("1_5ogv1")
+metadata/_custom_type_script = "uid://im6p8ln1nrf6"
