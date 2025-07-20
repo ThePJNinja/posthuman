@@ -2,12 +2,20 @@
 
 [ext_resource type="Script" uid="uid://rfd3fccsob0g" path="res://level/menu/main_menu.gd" id="1_0q58x"]
 
-[node name="MainMenu" type="CanvasLayer"]
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_0q58x")
 MenuName = &"Main Menu"
-metadata/_custom_type_script = "uid://im6p8ln1nrf6"
 
 [node name="Buttons" type="VBoxContainer" parent="."]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

@@ -1,36 +1,51 @@
-class_name MenuLayer extends CanvasLayer
+class_name Menu extends Control
 
-signal HideMenu
-signal ChangeMenu
+signal Add_Menu
+signal Set_Menu
+signal Menu_Off
+signal Load_Level
 
 @export var MenuName: StringName
-var PrevMenu: MenuLayer
 @export var SetChildMenus: Array[PackedScene]
-var ChildMenus: Array[MenuLayer]
+var ChildMenus: Array[Menu]
+var PrevMenu: Menu
 
 func _ready() -> void:
-	for i in SetChildMenus:
-		var i2 := i.instantiate() as MenuLayer
-		ChildMenus.append(i2)
-		$"..".add_child(i2)
-		i2.hide()
+	add_menus(SetChildMenus)
 
-func set_prev(new_parent: MenuLayer) -> void:
+func add_menus(menus: Array[PackedScene]) -> void:
+	for menu in menus:
+		add_menu(menu)
+
+func add_menu(packed_menu: PackedScene) -> void:
+	var menu := packed_menu.instantiate() as Menu
+	Add_Menu.emit(menu)
+	ChildMenus.append(menu)
+	$"..".add_child(menu)
+	menu.hide()
+
+func set_prev(new_parent: Menu) -> void:
 	PrevMenu = new_parent
 
-func go_to_menu(menu: MenuLayer) -> void:
+func set_menu(menu: Menu, do_set_prev := true) -> void:
+	Set_Menu.emit(menu)
 	menu.show()
-	menu.set_prev($".")
 	hide()
+	if do_set_prev: menu.set_prev($".")
 
-func get_child_menu(name: StringName) -> MenuLayer:
+func get_child_menu(menu_name: StringName) -> Menu:
 	for i in ChildMenus:
-		if i.MenuName == name:
+		if i.MenuName == menu_name:
 			return i
-	return null
+	return
+
+func set_menu_to_child(menu_name: StringName) -> void:
+	set_menu(get_child_menu(menu_name))
 
 func back() -> void:
 	if PrevMenu:
-		ChangeMenu.emit(PrevMenu)
+		set_menu(PrevMenu, false)
+		print("Back!")
 	else:
-		HideMenu.emit()
+		Menu_Off.emit()
+		print("Menu off...")

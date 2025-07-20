@@ -1,4 +1,4 @@
-extends MenuLayer
+extends Menu
 
 func _ready() -> void:
 	MenuName = "Main Menu"
@@ -10,8 +10,10 @@ func _ready() -> void:
 	%"Test Map".connect("button_up", test_map)
 	%Quit.connect("button_up", quit)
 
+## BUTTONS
+
 func resume() -> void:
-	pass
+	back()
 
 func new_game() -> void:
 	pass
@@ -20,10 +22,10 @@ func load_game() -> void:
 	pass
 
 func options() -> void:
-	go_to_menu(get_child_menu("Options"))
+	set_menu_to_child("Options")
 
 func test_map() -> void:
-	pass
+	Load_Level.emit(load("res://level/testing/DevPlayground.tscn"))
 
 func quit() -> void:
 	pass

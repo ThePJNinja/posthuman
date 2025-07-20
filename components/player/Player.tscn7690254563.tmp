@@ -8,9 +8,10 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yrsj2"]
 
 [node name="Player" type="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 top_level = true
 script = ExtResource("1_7504e")
+SetMaxHealth = 500.0
+SetHealth = 500.0
 
 [node name="Hud" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
@@ -103,26 +104,19 @@ wait_time = 0.5
 autostart = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_yrsj2")
 
-[node name="PivotY" type="Node3D" parent="CollisionShape3D"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.683, 0)
-
-[node name="SidePointer" type="Node3D" parent="CollisionShape3D/PivotY"]
-unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="PivotX" type="Node3D" parent="CollisionShape3D/PivotY"]
+[node name="PivotY" type="Node3D" parent="."]
 unique_name_in_owner = true
 
-[node name="Eye" type="Camera3D" parent="CollisionShape3D/PivotY/PivotX"]
-transform = Transform3D(1, 0, -2.53697e-16, 0, 1, 0, 2.53697e-16, 0, 1, 0, 0, 0)
+[node name="PivotX" type="Node3D" parent="PivotY"]
+
+[node name="Eye" type="Camera3D" parent="PivotY/PivotX"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.683237, -0.104416)
 fov = 90.0
 
-[node name="Pistol" parent="CollisionShape3D/PivotY/PivotX/Eye" instance=ExtResource("4_xh4xr")]
+[node name="Pistol" parent="PivotY/PivotX/Eye" instance=ExtResource("4_xh4xr")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.2, -0.3, -0.4)
 
-[node name="Projectile Start Point" type="Marker3D" parent="CollisionShape3D/PivotY/PivotX/Eye"]
+[node name="Projectile Start Point" type="Marker3D" parent="PivotY/PivotX/Eye"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.740192)
