@@ -1,20 +1,83 @@
-[gd_scene load_steps=4 format=3 uid="uid://bi7kbes8afpjq"]
+[gd_scene load_steps=10 format=3 uid="uid://bi7kbes8afpjq"]
 
 [ext_resource type="PackedScene" uid="uid://wfw5cj2cw06q" path="res://components/geometry/dev/DevPlatform.tscn" id="1_fiq3x"]
 [ext_resource type="PackedScene" uid="uid://b31235e0u2xgr" path="res://components/player/Player.tscn" id="2_3o361"]
 [ext_resource type="PackedScene" uid="uid://dgux4iyw6f5ol" path="res://components/geometry/dev/Slopes.tscn" id="3_qjap4"]
 
-[node name="DevPlayground" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_qjap4"]
+size = Vector3(2.9585, 2.96783, 6.43365)
 
-[node name="DevPlatform" parent="." instance=ExtResource("1_fiq3x")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_qjap4"]
+radius = 300.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_njxyo"]
+radius = 300.0
+height = 600.0
+rings = 512
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7d6ne"]
+radius = 900.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_njxyo"]
+size = Vector3(3, 0.5, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7d6ne"]
+size = Vector3(3, 0.5, 3)
+
+[node name="DevPlayground" type="Node3D"]
+metadata/_edit_lock_ = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.496762, 0.433943, -0.751612, 0, 0.866025, 0.5, 0.867887, -0.248381, 0.430208, 0, 2.39361, -1.62518)
+transform = Transform3D(0.496762, 0.433943, -0.751612, 0, 0.866026, 0.5, 0.867887, -0.248381, 0.430208, 0, 2.39361, -1.62518)
 light_color = Color(1, 0.895, 0.65, 1)
 
-[node name="Slopes" parent="." instance=ExtResource("3_qjap4")]
+[node name="Geometry" type="Node3D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="DevPlatform" parent="Geometry" instance=ExtResource("1_fiq3x")]
+
+[node name="Slopes" parent="Geometry" instance=ExtResource("3_qjap4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0443039, 0.050523, 13.2959)
 
+[node name="Area3D" type="Area3D" parent="Geometry/Slopes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84763, 1.82131, -0.4705)
+collision_mask = 7
+gravity_space_override = 3
+gravity_point_center = Vector3(-1, 0, 0)
+gravity_direction = Vector3(-1, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Slopes/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.979248, -0.438873, -0.00479126)
+shape = SubResource("BoxShape3D_qjap4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 855.712, 163.96, 780.595)
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/StaticBody3D"]
+shape = SubResource("SphereShape3D_qjap4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/StaticBody3D/CollisionShape3D"]
+mesh = SubResource("SphereMesh_njxyo")
+
+[node name="Area3D" type="Area3D" parent="Geometry/StaticBody3D/CollisionShape3D/MeshInstance3D"]
+collision_mask = 7
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/StaticBody3D/CollisionShape3D/MeshInstance3D/Area3D"]
+shape = SubResource("SphereShape3D_7d6ne")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 25.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/StaticBody3D2"]
+shape = SubResource("BoxShape3D_njxyo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/StaticBody3D2/CollisionShape3D"]
+mesh = SubResource("BoxMesh_7d6ne")
+
 [node name="Player" parent="." instance=ExtResource("2_3o361")]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 5.58596, 1.25682, 16.953)
-NewGravityDir = Vector3(-1, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491817, 1.00052, 22.9196)

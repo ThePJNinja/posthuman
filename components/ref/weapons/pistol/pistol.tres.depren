@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Weapons" load_steps=5 format=3 uid="uid://vdkin6tgxhxf"]
+
+[ext_resource type="Resource" uid="uid://c54jjvuxpy2yr" path="res://components/weapons/pistol/pistol_attack.tres" id="1_4ibiu"]
+[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapons/pistol/pistol.res" id="1_clej8"]
+[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapons/pistol/cross.svg" id="1_kd1cs"]
+[ext_resource type="Script" uid="uid://cgyni8pqies5j" path="res://components/weapons/weapons.gd" id="1_pp51x"]
+
+[resource]
+script = ExtResource("1_pp51x")
+name = &"Magnor"
+attack = ExtResource("1_4ibiu")
+position = Vector3(0.2, -0.3, -0.4)
+rotation = Vector3(0, 90, 0)
+mesh = ExtResource("1_clej8")
+crosshair = ExtResource("1_kd1cs")
+metadata/_custom_type_script = "uid://cgyni8pqies5j"

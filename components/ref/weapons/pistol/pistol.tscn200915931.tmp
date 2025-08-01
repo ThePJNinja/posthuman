@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://cwmp2rlaopf77"]
+
+[ext_resource type="Script" uid="uid://c3cf7flc38v6f" path="res://components/weapons/weapon.gd" id="1_qhp6b"]
+[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapons/pistol/cross.svg" id="2_m8ywd"]
+[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapons/pistol/pistol.res" id="3_m8ywd"]
+
+[sub_resource type="GDScript" id="GDScript_m8ywd"]
+script/source = "class_name Weapon_Attack extends Node3D
+
+#enum attack_type {
+	#BEAM,		# Deals damage every couple of tics in contact with beam projectiles
+	#HITSCAN,	# Attacks By a scan of the crosshair position
+	#MELEE,		# Hitscan with limited range
+	#PROJECTILE	# Shoots projectiles that damage upon contact
+#}
+#const BEAM = attack_type.BEAM
+#const HITSCAN = attack_type.HITSCAN
+#const MELEE = attack_type.MELEE
+#const PROJECTILE = attack_type.PROJECTILE
+
+@export var id: StringName
+@export_category(\"Effect\")
+@export_range(0.1, 2147483647.0, 0.1, \"or_less\", \"exp\") var damage := 10.0
+
+func _attack1(start_point: Node3D) -> void: pass
+"
+
+[sub_resource type="Resource" id="Resource_dy4hs"]
+script = SubResource("GDScript_m8ywd")
+id = &""
+damage = 10.0
+metadata/_custom_type_script = "uid://7lj18w6g0py2"
+
+[node name="Pistol" type="Node3D" node_paths=PackedStringArray("mesh_node")]
+script = ExtResource("1_qhp6b")
+id = &"pistol"
+screen_name = "Magnar Slugthrower"
+mesh_node = NodePath("MeshInstance3D")
+crosshair = ExtResource("2_m8ywd")
+attack = SubResource("Resource_dy4hs")
+metadata/_custom_type_script = "uid://c3cf7flc38v6f"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.500877, -0.246918, -0.491688)
+mesh = ExtResource("3_m8ywd")
+skeleton = NodePath("")

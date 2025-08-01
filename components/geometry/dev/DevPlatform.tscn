@@ -2,8 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://du7q0guvbt6fk" path="res://icon.svg" id="1_5bnfw"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_7dfgy"]
-size = Vector3(500, 0.1, 500)
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_nj2ha"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_7dfgy"]
 size = Vector2(500, 500)
@@ -17,8 +16,8 @@ albedo_texture = ExtResource("1_5bnfw")
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000519961, 0)
-shape = SubResource("BoxShape3D_7dfgy")
+transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0.000519961, 0)
+shape = SubResource("WorldBoundaryShape3D_nj2ha")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)

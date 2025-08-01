@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://nmdythkiwfkx"]
+
+[ext_resource type="Script" uid="uid://b02nvdvfq10u6" path="res://components/ref/weapons/projectile.gd" id="1_riq86"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_riq86"]
+radius = 0.1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_riq86"]
+top_radius = 0.0
+
+[node name="PistolSlug" type="Node3D" node_paths=PackedStringArray("rigid_body", "mesh")]
+script = ExtResource("1_riq86")
+rigid_body = NodePath("RigidBody3D")
+mesh = NodePath("RigidBody3D/MeshInstance3D")
+metadata/_custom_type_script = "uid://b02nvdvfq10u6"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_riq86")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(0.197259, 0, 0, 0, -4.2189e-09, 0.197259, 0, -0.0965171, -8.62247e-09, 0.000145674, -0.00155285, -0.0341189)
+layers = 524289
+mesh = SubResource("CylinderMesh_riq86")

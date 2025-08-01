@@ -1,57 +1,65 @@
-extends CharacterBody3D
+class_name Player extends CharacterBody3D
 
 signal MenuOn
 signal MenuOff
 
-@export var StartingWeapon: Weapons
-@export var Default_FOV := 90.0
+@export var default_fov := 90.0
+
+@export_category("Nodes")
+@export var HUD: CanvasLayer
+@export var COLLIDER: CollisionShape3D
+@export var PIVOT_Y: Node3D
+@export var PIVOT_X: Node3D
+@export var EYE: Camera3D
+@export var WEAPON: Node3D
+@export var PROJECTILE_START_POINT: Marker3D
+@export var ANIMATION_PLAYER: AnimationPlayer
+@export var SHAPE_CAST: ShapeCast3D
+@export var SLIDE_TIMER: Timer
 
 @export_category("Movement")
-@export var Jump_Strength := 4.5
-@export var SprintSpeed := 20.0
-@export var WalkSpeed := 5.0
-@export var Acceleration := 10.0
-@export var Friction := 50.0
-@export var AirAccelMultiplier := 2.0
-var Speed: float
-@export var NewGravityDir := Vector3.DOWN
-@export var NewGravityStr := 9.8
-@onready var NewGravity := NewGravityDir.normalized() * NewGravityStr
-var Gravity: Vector3
-@export var SensX100k := 200.0
-var Sensitivity: float
+@export var SPRINT_SPEED := 20.0
+@export var WALK_SPEED := 5.0
+@export var JUMP_STRENGTH := 4.5
+@export var ACCELERATION := 10.0
+@export var FRICTION := 50.0
+@export var AIR_ACCELERATION_MULTIPLIER := 1.0
+@export var SENS_X_100K := 200.0
+
+var speed: float
+var gravity: Vector3
+var sensitivity: float
+var is_crouching := false
+var set_crouching := false
 
 @export_category("Status")
-@export var SetMaxHealth := 100.0
-@export var SetHealth := 100.0
-var MaxHealth: float
-var Health: float
-
-@onready var Hud := %Hud as CanvasLayer
-@onready var Pivot_Y := %PivotY as Node3D
-@onready var Pivot_X := %PivotY/PivotX as Node3D
-@onready var Eye := %PivotY/PivotX/Eye as Camera3D
-@onready var ProjectileStartPoint := %"PivotY/PivotX/Eye/Projectile Start Point" as Marker3D
+@export var SET_MAX_HEALTH := 100.0
+@export var SET_HEALTH := 100.0
+@onready var max_health: float:
+	set(v):
+		max_health = v
+		HUD.set_health(v)
+@onready var health: float:
+	set(v):
+		health = v
+		HUD.set_health_max(v)
 
 func _ready() -> void:
-	print(get_gravity())
-	activate()
-
-func activate() -> void:
+	Global.player = self
+	
+	gravity = get_gravity()
+	health = SET_HEALTH
+	max_health = SET_MAX_HEALTH
 	
 	# Set Camera
-	Eye.make_current()
-	Hud.show()
-	
-	# Set Health Values
-	set_health_and_max(SetHealth, SetMaxHealth)
+	EYE.make_current()
+	#HUD.show()
 	
 	# Set Gravity
-	var original_gravity := get_gravity()
-	Gravity = NewGravity
+	#gravity = NewGravity
 	
-	# Modify Sensitivity
-	Sensitivity = SensX100k/100000
+	# Modify sensitivity
+	sensitivity = SENS_X_100K/100000
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -61,84 +69,118 @@ func _input(event: InputEvent) -> void:
 		look(event as InputEventMouseMotion)
 
 func look(look_dir: InputEventMouseMotion) -> void:
-	%PivotY.rotate_y(-look_dir.relative.x * Sensitivity)
-	%PivotX.rotate_x(-look_dir.relative.y * Sensitivity)
-	var PXRotation := (%PivotX as Node3D).rotation
+	PIVOT_Y.rotate_y(-look_dir.relative.x * sensitivity)
+	PIVOT_X.rotate_x(-look_dir.relative.y * sensitivity)
+	var PXRotation := PIVOT_X.rotation
 	PXRotation.x = clamp(PXRotation.x, -PI/2, PI/2)
-	%PivotX.rotation = PXRotation
+	PIVOT_X.rotation = PXRotation
 
 func _process(_delta: float) -> void:
-	pass
-	#var prevFov = Eye.fov
-	#var aimFov = clampf(Default_FOV + velocity.length(), 1.0, 180)
-	#var nuFovAdd = clampf(aimFov - prevFov, -0.1, 0.1);
-	#Eye.fov += pow(nuFovAdd, 2)w
+	var center := get_viewport().size / 2 as Vector2i
+	var origin := EYE.project_ray_origin(center)
+	var end := origin + EYE.project_ray_normal(center) * 1000
+	var query := PhysicsRayQueryParameters3D.create(origin, end)
+	var result := EYE.get_world_3d().direct_space_state.intersect_ray(query)
+	
+	# I think this is bugged -v
+	WEAPON.face(result.get("position", end))
+	
+	if is_processing_input() and Input.is_action_just_pressed("Attack"):
+		pass#WEAPON.fire(PROJECTILE_START_POINT)
 
 func _physics_process(delta: float) -> void:
-	# Rotate towards gravity
-	up_direction = -Gravity.normalized()
-	var position2 := position
-	look_at_from_position(Vector3.ZERO, up_direction)
-	position = position2
+	rotate_to_gravity()
+	move_via_input(delta)
+	crouch()
+	
+	move_and_slide()
+
+func crouch() -> void:
+	if Input.is_action_just_pressed("Crouch (Hold)"):
+		set_crouching = true
+	elif Input.is_action_just_released("Crouch (Hold)"):
+		set_crouching = false
+	elif Input.is_action_just_pressed("Crouch (Toggle)"):
+		set_crouching = !set_crouching
+	
+	if set_crouching == is_crouching: return
+	
+	if set_crouching:
+		ANIMATION_PLAYER.play("Crouch", -1, 3, false)
+	elif !SHAPE_CAST.is_colliding(): 
+		ANIMATION_PLAYER.play("Crouch", -1, -3, true)
+
+func _on_animation_player_animation_started(anim_name: StringName) -> void:
+	if anim_name == "Crouch":
+		is_crouching = !is_crouching
+
+func rotate_to_gravity() -> void:
+	if gravity == get_gravity(): return
+	gravity = get_gravity()
+	if gravity == Vector3.ZERO:
+		gravity = Vector3(0.0, -9.8, 0.0)
+	
+	var angle: float
+	var axis: Vector3
+	up_direction = -gravity.normalized()
+	
+	angle = Vector3.DOWN.angle_to(gravity.normalized())
+	axis = Vector3.DOWN.cross(gravity.normalized()).normalized()
+	global_rotation = Vector3.ZERO
+	if axis != Vector3.ZERO: global_rotate(
+		axis,
+		angle
+	)
+
+func move_via_input(delta: float) -> void:
+	var direction := Vector3.ZERO
+	direction += PIVOT_Y.global_transform.basis.z * Input.get_axis("Move Fowards", "Move Backwards")
+	direction += PIVOT_Y.global_transform.basis.x * Input.get_axis("Move Left", "Move Right")
+	direction = direction.normalized()
 	
 	# Handle Sprint
-	Speed = WalkSpeed if Input.is_action_pressed("Walk") else SprintSpeed
-	
-	var direction := Vector3.ZERO
-	direction += Pivot_Y.global_transform.basis.z * Input.get_axis("Move Fowards", "Move Backwards")
-	direction += Pivot_Y.global_transform.basis.x * Input.get_axis("Move Left", "Move Right")
-	direction = direction.normalized()
+	speed = WALK_SPEED if Input.is_action_pressed("Walk") or is_crouching else SPRINT_SPEED
 	
 	# Ground Movement
 	if is_on_floor():
 		# Todo: add handle crouch to floor and air
 		
 		if direction and is_processing_input():
-			velocity += direction * (Acceleration * delta)
-			var velfric := velocity + direction * (Friction * delta)
-			if velocity.length() > Speed:
-				velocity *= Speed/velocity.length()
+			var velaccel := velocity + direction * (ACCELERATION * delta)
+			var velfric := velocity + direction * (FRICTION * delta)
 			if velfric.length() < velocity.length():
-				#print("Friction!!!!") # Used to test the extra effect from trying to slow down
+				#print("FRICTION!!!!") # Used to test the extra effect from trying to slow down
 				velocity = velfric
+			elif velaccel.length() < speed:
+				velocity = velaccel
 		else:
 			if velocity.length() > 0.5:
-				velocity -= velocity.normalized() * (Friction * delta)
+				velocity -= velocity.normalized() * (FRICTION * delta)
 			else:
 				velocity = Vector3.ZERO
 		
 		# Handle jump.
-		if Input.is_action_pressed("Jump"):
-			velocity += Jump_Strength*up_direction
+		if Input.is_action_pressed("Jump") and !(ANIMATION_PLAYER.current_animation == "Crouch" and ANIMATION_PLAYER.is_playing()):
+			velocity += JUMP_STRENGTH * up_direction
 	
 	# Air Movement. Strafing!
 	else:
 		if is_processing_input():
-			var add_speed = Speed - velocity.dot(direction)
+			var add_speed = SPRINT_SPEED - velocity.dot(direction)
 			
 			if add_speed > 0:
-				var accel_speed = velocity.length() * AirAccelMultiplier * delta
+				var accel_speed = velocity.length() * AIR_ACCELERATION_MULTIPLIER * delta
 				if (accel_speed > add_speed):
 					accel_speed = add_speed
 				velocity += accel_speed * direction
 		
 		# Add the gravity.
-		velocity += Gravity * delta
-	
-	move_and_slide()
-
-func set_health(value: float) -> void:
-	set_health_and_max(value, MaxHealth)
-
-func set_health_and_max(value: float, max_value: float) -> void:
-	Health = value
-	MaxHealth = max_value
-	Hud.set_health(value, max_value)
+		velocity += gravity * 0.75 * delta if Input.is_action_pressed("Jump") else gravity * delta
 
 func menu_on() -> void:
-	Hud.hide()
+	HUD.hide()
 	MenuOn.emit()
 
 func menu_off() -> void:
-	Hud.show()
+	HUD.show()
 	MenuOff.emit()

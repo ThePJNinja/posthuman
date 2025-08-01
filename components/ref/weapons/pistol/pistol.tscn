@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwmp2rlaopf77"]
+
+[ext_resource type="Script" uid="uid://c3cf7flc38v6f" path="res://components/ref/weapons/weapon.gd" id="1_qhp6b"]
+[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapons/pistol/cross.svg" id="2_m8ywd"]
+[ext_resource type="PackedScene" uid="uid://nmdythkiwfkx" path="res://components/ref/weapons/pistol/pistol_slug.tscn" id="3_dy4ns"]
+[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapons/pistol/pistol.res" id="3_m8ywd"]
+
+[node name="Pistol" type="Node3D" node_paths=PackedStringArray("mesh_node")]
+script = ExtResource("1_qhp6b")
+id = &"pistol"
+screen_name = "Magnar Slugthrower"
+mesh_node = NodePath("MeshInstance3D")
+crosshair = ExtResource("2_m8ywd")
+attack = ExtResource("3_dy4ns")
+metadata/_custom_type_script = "uid://c3cf7flc38v6f"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.500877, -0.246918, -0.491688)
+mesh = ExtResource("3_m8ywd")
+skeleton = NodePath("")
