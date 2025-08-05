@@ -17,19 +17,17 @@ signal MenuOff
 @export var SLIDE_TIMER: Timer
 
 @export_category("Movement")
-@export var SPRINT_SPEED := 7.0
-@export var WALK_SPEED := 4.0
-@export var ACCELERATION := 3.0
-@export var FRICTION := 5.0
+var speed := 7.0
+var acceleration := 2.0
+var friction := 3.0
 @export var JUMP_STRENGTH := 4.5
 @export var AIR_ACCELERATION_MULTIPLIER := 1.0
 @export var SENS_X_100K := 200.0
 
-var speed: float
 var gravity: Vector3
 var sensitivity: float
-var is_crouching := false
-var set_crouching := false
+#var is_crouching := false
+#var set_crouching := false
 
 @export_category("Status")
 @export var SET_MAX_HEALTH := 100.0
@@ -81,31 +79,7 @@ func _process(_delta: float) -> void:
 		pass#WEAPON.fire(PROJECTILE_START_POINT)
 
 func _physics_process(delta: float) -> void:
-	rotate_to_gravity()
-	move_via_input(delta)
-	crouch()
-	move_and_slide()
-	
 	point_weapon()
-
-func crouch() -> void:
-	if Input.is_action_just_pressed("Crouch (Hold)"):
-		set_crouching = true
-	elif Input.is_action_just_released("Crouch (Hold)"):
-		set_crouching = false
-	elif Input.is_action_just_pressed("Crouch (Toggle)"):
-		set_crouching = !set_crouching
-	
-	if set_crouching == is_crouching: return
-	
-	if set_crouching:
-		ANIMATION_PLAYER.play("Crouch", -1, 3, false)
-	elif !SHAPE_CAST.is_colliding(): 
-		ANIMATION_PLAYER.play("Crouch", -1, -3, true)
-
-func _on_animation_player_animation_started(anim_name: StringName) -> void:
-	if anim_name == "Crouch":
-		is_crouching = !is_crouching
 
 func rotate_to_gravity() -> void:
 	var gravity2 = get_gravity()
@@ -122,50 +96,7 @@ func rotate_to_gravity() -> void:
 	if axis != Vector3.ZERO: global_rotate(axis, angle)
 	#print(global_rotation_degrees)
 
-func move_via_input(delta: float) -> void:
-	var direction := Vector3.ZERO
-	direction += PIVOT_Y.global_transform.basis.z * Input.get_axis("Move Fowards", "Move Backwards")
-	direction += PIVOT_Y.global_transform.basis.x * Input.get_axis("Move Left", "Move Right")
-	direction = direction.normalized()
-	
-	# Handle Sprint
-	speed = WALK_SPEED if Input.is_action_pressed("Walk") or is_crouching else SPRINT_SPEED
-	
-	# Ground Movement
-	if is_on_floor():
-		# Todo: add handle crouch to floor and air
-		
-		if direction and is_processing_input():
-			var velaccel := velocity.lerp(direction * speed, ACCELERATION * delta)
-			var velfric := velocity.lerp(direction * speed, FRICTION * delta)
-			if velfric.length() < velocity.length():
-				#print("FRICTION!!!!") # Used to test the extra effect from trying to slow down
-				velocity = velfric
-			elif velaccel.length() < speed:
-				velocity = velaccel
-		else:
-			velocity = velocity.move_toward(Vector3.ZERO, FRICTION)
-		
-		# Handle jump.
-		if Input.is_action_pressed("Jump") and !(ANIMATION_PLAYER.current_animation == "Crouch" and ANIMATION_PLAYER.is_playing()):
-			velocity += JUMP_STRENGTH * up_direction
-	
-	# Air Movement. Strafing!
-	else:
-		if is_processing_input():
-			var add_speed = SPRINT_SPEED - velocity.dot(direction)
-			
-			if add_speed > 0:
-				var accel_speed = velocity.length() * AIR_ACCELERATION_MULTIPLIER * delta
-				if (accel_speed > add_speed):
-					accel_speed = add_speed
-				velocity += accel_speed * direction
-		
-		# Add the gravity.
-		velocity += gravity * 0.75 * delta if Input.is_action_pressed("Jump") else gravity * delta
-
 func point_weapon() -> void:
-	# I think this is bugged -v
 	var center := get_viewport().size / 2 as Vector2i
 	var origin := EYE.project_ray_origin(center)
 	var end := origin + EYE.project_ray_normal(center) * 1000
@@ -175,6 +106,17 @@ func point_weapon() -> void:
 		WEAPON.facing_this_point = (1000 * -EYE.global_transform.basis.z) + EYE.global_position
 		return
 	WEAPON.facing_this_point = result
+
+func get_horisontal_direction() -> Vector3:
+	var direction := Vector3.ZERO
+	if is_processing_input():
+		direction += PIVOT_Y.global_transform.basis.z * Input.get_axis("Move Fowards", "Move Backwards")
+		direction += PIVOT_Y.global_transform.basis.x * Input.get_axis("Move Left", "Move Right")
+		direction = direction.normalized()
+	return direction
+
+func apply_gravity(delta: float, multiplier := 1.0) -> void:
+	velocity += gravity * multiplier * delta
 
 func menu_on() -> void:
 	HUD.hide()

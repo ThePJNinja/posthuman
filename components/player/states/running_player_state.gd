@@ -1,21 +1,34 @@
-class_name RunningPlayerState extends State
+class_name RunningPlayerState extends MovementPlayerState
 
-@export var ANIMATION_PLAYER: AnimationPlayer
 @export var TOP_ANIM_SPEED := 2.2
+@export var SPEED := 7.0
+@export var ACCELERATION := 2.0
+@export var FRICTION := 3.0
 
 func physics_update(delta: float) -> void:
-	if Global.player.velocity.length() == 0:
+	PLAYER.rotate_to_gravity()
+	move(delta, SPEED, ACCELERATION, FRICTION)
+	set_animation_speed(PLAYER.velocity.length(), delta)
+	if Input.is_action_pressed("Jump"): jump()
+	PLAYER.move_and_slide()
+	
+	if Input.is_action_just_pressed("Crouch (Hold)") or Input.is_action_just_pressed("Crouch (Toggle)"):
+		transition.emit("CrouchedPlayerState")
+	elif PLAYER.velocity.length() == 0:
 		transition.emit("IdlePlayerState")
-	if !Global.player.is_on_floor():
-		transition.emit("IdlePlayerState")
-	set_animation_speed(Global.player.velocity.length(), delta)
+	elif !PLAYER.is_on_floor():
+		if FALL_CAST.is_colliding() and !Input.is_action_pressed("Jump"):
+			PLAYER.apply_floor_snap()
+		else:
+			transition.emit("AirPlayerState")
 
-func set_animation_speed(speed: float, delta: float):
-	var alpha := remap(speed, 0.0, Global.player.SPRINT_SPEED, 0.0, 1.0)
-	ANIMATION_PLAYER.speed_scale = lerpf(0.0, TOP_ANIM_SPEED, alpha)
+func set_animation_speed(speed: float, delta: float) -> void:
+	var alpha := remap(speed, 0.0, SPEED, 0.0, 1.0)
+	PLAYER_ANIMATION_PLAYER.speed_scale = lerpf(0.0, TOP_ANIM_SPEED, alpha)
 
-func enter():
-	ANIMATION_PLAYER.play("Running", -1, 1.0)
+func enter() -> void:
+	PLAYER_ANIMATION_PLAYER.play("Running", -1, 1.0)
 
-func exit():
-	ANIMATION_PLAYER.stop()
+func exit() -> void:
+	PLAYER_ANIMATION_PLAYER.stop()
+	PLAYER_ANIMATION_PLAYER.speed_scale = 1.0

@@ -1,9 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://wfw5cj2cw06q"]
+[gd_scene load_steps=5 format=3 uid="uid://wfw5cj2cw06q"]
+
+[ext_resource type="Texture2D" uid="uid://biywtp3ikaadw" path="res://icon.svg" id="1_nj2ha"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_nj2ha"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5bnfw"]
+albedo_texture = ExtResource("1_nj2ha")
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_agu7u"]
-size = Vector2(200, 200)
+material = SubResource("StandardMaterial3D_5bnfw")
+size = Vector2(1000, 1000)
 
 [node name="DevPlatform" type="Node3D"]
 

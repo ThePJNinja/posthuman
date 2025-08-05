@@ -345,30 +345,18 @@ metadata/_custom_type_script = "uid://bwgd13rtk8ahm"
 
 [node name="IdlePlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("6_5u2jg")
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://dk8hjl1nfajy8"
 
 [node name="RunningPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("7_5u2jg")
-TOP_ANIM_SPEED = null
-SPEED = null
-ACCELERATION = null
-FRICTION = null
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://5nk44o5so0pj"
 
 [node name="AirPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("8_xnekc")
-SPEED = null
 JUMP_VELOCITY = 0.0
 metadata/_custom_type_script = "uid://47xkbi218kn7"
 
 [node name="CrouchedPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("SHAPE_CAST")]
 script = ExtResource("9_yngd5")
-CROUCHING_SPEED = null
-SPEED = null
-ACCELERATION = null
-FRICTION = null
 SHAPE_CAST = NodePath("../../CrouchCast")
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://bf7qr1njka30q"
