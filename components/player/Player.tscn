@@ -1,12 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://b31235e0u2xgr"]
+[gd_scene load_steps=14 format=3 uid="uid://b31235e0u2xgr"]
 
 [ext_resource type="Script" uid="uid://dlqrgsuf6e0ms" path="res://components/player/player.gd" id="1_7504e"]
 [ext_resource type="Script" uid="uid://bollm4j4b3kdp" path="res://components/player/hud.gd" id="2_lt7w0"]
 [ext_resource type="Theme" uid="uid://3pf2keh4y56m" path="res://components/player/hud.tres" id="2_yxufj"]
 [ext_resource type="PackedScene" uid="uid://bdb8cs4xscb5m" path="res://components/weapon/weapon_scene.tscn" id="4_xh4xr"]
-[ext_resource type="Script" uid="uid://bwgd13rtk8ahm" path="res://components/player/state_machine.gd" id="5_eglpv"]
-[ext_resource type="Script" uid="uid://dk8hjl1nfajy8" path="res://components/player/idle_player_state.gd" id="6_5u2jg"]
-[ext_resource type="Script" uid="uid://5nk44o5so0pj" path="res://components/player/running_player_state.gd" id="7_5u2jg"]
+[ext_resource type="Script" uid="uid://bwgd13rtk8ahm" path="res://components/player/states/state_machine.gd" id="5_eglpv"]
+[ext_resource type="Script" uid="uid://dk8hjl1nfajy8" path="res://components/player/states/idle_player_state.gd" id="6_5u2jg"]
+[ext_resource type="Script" uid="uid://5nk44o5so0pj" path="res://components/player/states/running_player_state.gd" id="7_5u2jg"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yrsj2"]
 
@@ -63,26 +63,97 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0)]
 }
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PivotY/PivotX/Eye:position:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PivotY/PivotX/Eye:position:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PivotY/PivotX/Eye:position:z")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_5u2jg"]
+resource_name = "Running"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PivotY/PivotX/Eye:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PivotY/PivotX/Eye:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PivotY/PivotX/Eye:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.233333, 0.143524, 0, -0.266667, 0.138096, 0.266667, -0.155045, 0, -0.233333, -0.152331, 0.233333, 0.135381, 0, -0.266667, 0.135381, 0.266667, -0.144188, 0, -0.233333, -0.149617, 0.2, 0.143524),
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lbsqm"]
 _data = {
 &"Crouch": SubResource("Animation_eglpv"),
-&"RESET": SubResource("Animation_xh4xr")
+&"RESET": SubResource("Animation_xh4xr"),
+&"Running": SubResource("Animation_5u2jg")
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xh4xr"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("HUD", "COLLIDER", "PIVOT_Y", "PIVOT_X", "EYE", "WEAPON", "PROJECTILE_START_POINT", "ANIMATION_PLAYER", "SHAPE_CAST", "SLIDE_TIMER")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("HUD", "PIVOT_Y", "PIVOT_X", "EYE", "WEAPON", "PROJECTILE_START_POINT", "ANIMATION_PLAYER", "SHAPE_CAST", "SLIDE_TIMER")]
 top_level = true
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_7504e")
 HUD = NodePath("Hud")
-COLLIDER = NodePath("Collider")
 PIVOT_Y = NodePath("PivotY")
 PIVOT_X = NodePath("PivotY/PivotX")
 EYE = NodePath("PivotY/PivotX/Eye")
-WEAPON = NodePath("PivotY/PivotX/Eye/Weapon")
+WEAPON = NodePath("PivotY/PivotX/Weapon")
 PROJECTILE_START_POINT = NodePath("PivotY/PivotX/Eye/Projectile Start Point")
 ANIMATION_PLAYER = NodePath("AnimationPlayer")
 SHAPE_CAST = NodePath("ShapeCast3D")
@@ -185,13 +256,13 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="Eye" type="Camera3D" parent="PivotY/PivotX"]
-transform = Transform3D(1, 0, -2.53697e-16, 0, 1, 0, 2.53697e-16, 0, 1, 0, 0, 0)
 fov = 90.0
-
-[node name="Weapon" parent="PivotY/PivotX/Eye" instance=ExtResource("4_xh4xr")]
 
 [node name="Projectile Start Point" type="Marker3D" parent="PivotY/PivotX/Eye"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.740192)
+
+[node name="Weapon" parent="PivotY/PivotX" instance=ExtResource("4_xh4xr")]
+rotation_edit_mode = 2
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
@@ -217,11 +288,11 @@ metadata/_custom_type_script = "uid://bwgd13rtk8ahm"
 
 [node name="IdlePlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("6_5u2jg")
-metadata/_custom_type_script = "uid://dqbwgnib6bvjm"
+metadata/_custom_type_script = "uid://dk8hjl1nfajy8"
 
-[node name="RunningPlayerState" type="Node" parent="PlayerStateMachine"]
+[node name="RunningPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ANIMATION_PLAYER")]
 script = ExtResource("7_5u2jg")
-metadata/_custom_type_script = "uid://dqbwgnib6bvjm"
+ANIMATION_PLAYER = NodePath("../../AnimationPlayer")
+metadata/_custom_type_script = "uid://5nk44o5so0pj"
 
-[connection signal="crosshair" from="PivotY/PivotX/Eye/Weapon" to="Hud" method="set_crosshair"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]

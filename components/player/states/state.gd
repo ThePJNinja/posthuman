@@ -1,7 +1,5 @@
 class_name State extends Node
 
-var player: Player
-
 signal transition(new_state_name: StringName)
 
 func enter() -> void:

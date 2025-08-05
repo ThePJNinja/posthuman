@@ -6,7 +6,7 @@ var curr_menu: Menu
 var menus: Array[Menu] = []
 
 # Game
-var level: Node3D
+var LEVEL: Node3D
 var local: bool								# If game is running locally
 
 @export var Starting_Map: PackedScene
@@ -32,7 +32,7 @@ func menu_on() -> void:
 	# Pause
 	if Global.player:
 		Global.player.set_process_input(false)
-		level.set_physics_process(false)
+		LEVEL.set_physics_process(false)
 
 func menu_off() -> void:
 	%MenuItems.hide()
@@ -40,7 +40,7 @@ func menu_off() -> void:
 	# Unpause
 	if Global.player:
 		Global.player.set_process_input(true)
-		level.set_physics_process(true)
+		LEVEL.set_physics_process(true)
 
 func add_menu(menu: Menu) -> void: 
 	menus.append(menu)
@@ -63,11 +63,11 @@ func load_level(level: PackedScene) -> void:
 	set_level(level.instantiate())
 
 func set_level(node: Node3D) -> void:
-	if level:
-		remove_child(level)
-		level.queue_free()
+	if LEVEL:
+		remove_child(LEVEL)
+		LEVEL.queue_free()
 	
-	level = node
-	add_child(level)
+	LEVEL = node
+	add_child(LEVEL)
 	set_menu(%MenuItems/MainMenu)
 	menu_off()

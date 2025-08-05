@@ -11,9 +11,7 @@ func _ready() -> void:
 			child.transition.connect(on_child_transition)
 		else:
 			push_warning(name + " contains incompatible child node \"" + child.name + "\"")
-			
 	CURRENT_STATE.enter()
-
 
 func _process(delta: float) -> void:
 	CURRENT_STATE.update(delta)
@@ -28,5 +26,6 @@ func on_child_transition(new_state_name: StringName) -> void:
 			CURRENT_STATE.exit()
 			new_state.enter()
 			CURRENT_STATE = new_state
+		print(CURRENT_STATE)
 	else:
 		push_warning("State \"" + new_state_name + "\" does not exist for " + name) 

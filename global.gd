@@ -1,3 +1,4 @@
 extends Node
 
-var player
+## Current active player controller
+var player: Player
