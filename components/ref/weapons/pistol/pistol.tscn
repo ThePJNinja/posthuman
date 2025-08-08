@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://cwmp2rlaopf77"]
 
 [ext_resource type="Script" uid="uid://c3cf7flc38v6f" path="res://components/ref/weapons/weapon.gd" id="1_qhp6b"]
-[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapons/pistol/cross.svg" id="2_m8ywd"]
+[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapon/pistol/cross.svg" id="2_m8ywd"]
 [ext_resource type="PackedScene" uid="uid://nmdythkiwfkx" path="res://components/ref/weapons/pistol/pistol_slug.tscn" id="3_dy4ns"]
-[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapons/pistol/pistol.res" id="3_m8ywd"]
+[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapon/pistol/pistol.res" id="3_m8ywd"]
 
 [node name="Pistol" type="Node3D" node_paths=PackedStringArray("mesh_node")]
 script = ExtResource("1_qhp6b")

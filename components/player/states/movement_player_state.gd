@@ -19,12 +19,11 @@ func move(delta: float, speed: float, acceleration: float, friction: float) -> v
 		var velaccel := local_velocity.lerp(direction * speed, acceleration * delta)
 		var velfric := local_velocity.lerp(direction * speed, friction * delta)
 		if velfric.length() < local_velocity.length():
-			#print("friction!!!!") # Used to test the extra effect from trying to slow down
 			local_velocity = velfric
 		elif velaccel.length() < speed:
 			local_velocity = velaccel
 	else:
-		local_velocity = local_velocity.move_toward(Vector3.ZERO, friction)
+		local_velocity = local_velocity.move_toward(Vector3.ZERO, friction * delta)
 	PLAYER.velocity = local_velocity
 
 func move_air(delta: float, speed: float) -> void:

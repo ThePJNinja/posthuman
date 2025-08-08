@@ -1,15 +1,17 @@
 [gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://ctwqis1if63a"]
 
-[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapons/pistol/pistol.res" id="1_odevb"]
 [ext_resource type="Script" uid="uid://cvpjp1kj1ixt1" path="res://components/weapon/weapon_data.gd" id="1_ugp58"]
-[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapons/pistol/cross.svg" id="1_yimma"]
+[ext_resource type="Texture2D" uid="uid://caya23b64k7oj" path="res://assets/components/weapon/pistol/cross.svg" id="1_yimma"]
+[ext_resource type="ArrayMesh" uid="uid://dblijvbntyi3b" path="res://assets/components/weapon/pistol/pistol.res" id="2_2576f"]
 
 [resource]
 script = ExtResource("1_ugp58")
 name = &"pistol"
+damage = 10.0
+refire_time = 0.3
 position = Vector3(0.2, -0.2, -0.4)
 rotation = Vector3(0, 90, 0)
-mesh = ExtResource("1_odevb")
+mesh = ExtResource("2_2576f")
 crosshair = ExtResource("1_yimma")
 sway_min = Vector2(-120, -120)
 sway_max = Vector2(120, 120)

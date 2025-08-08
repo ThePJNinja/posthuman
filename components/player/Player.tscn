@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bollm4j4b3kdp" path="res://components/player/hud.gd" id="2_lt7w0"]
 [ext_resource type="Theme" uid="uid://3pf2keh4y56m" path="res://components/player/hud.tres" id="2_yxufj"]
 [ext_resource type="PackedScene" uid="uid://bdb8cs4xscb5m" path="res://components/weapon/weapon_scene.tscn" id="4_xh4xr"]
-[ext_resource type="Script" uid="uid://bwgd13rtk8ahm" path="res://components/player/states/state_machine.gd" id="5_eglpv"]
+[ext_resource type="Script" uid="uid://bwgd13rtk8ahm" path="res://components/state_machine.gd" id="5_eglpv"]
 [ext_resource type="Script" uid="uid://dk8hjl1nfajy8" path="res://components/player/states/idle_player_state.gd" id="6_5u2jg"]
 [ext_resource type="Script" uid="uid://5nk44o5so0pj" path="res://components/player/states/running_player_state.gd" id="7_5u2jg"]
 [ext_resource type="Script" uid="uid://47xkbi218kn7" path="res://components/player/states/air_player_state.gd" id="8_xnekc"]
@@ -61,6 +61,18 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, -1, 0), Vector3(0, -0.5, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CrouchCast:position")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, -0.5, 0), Vector3(0, 0.5, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_xh4xr"]
@@ -146,6 +158,18 @@ tracks/6/keys = {
 "update": 0,
 "values": [Vector3(0, -1, 0)]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("CrouchCast:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.5, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_5u2jg"]
 resource_name = "Running"
@@ -192,13 +216,13 @@ _data = {
 &"Running": SubResource("Animation_5u2jg")
 }
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_xh4xr"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_yngd5"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_yngd5"]
 height = 0.5
 radius = 0.1
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("HUD", "PIVOT_Y", "PIVOT_X", "EYE", "WEAPON", "PROJECTILE_START_POINT", "ANIMATION_PLAYER", "SHAPE_CAST", "SLIDE_TIMER")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("HUD", "PIVOT_Y", "PIVOT_X", "EYE", "WEAPON", "PROJECTILE_START_POINT", "HIT_SCAN", "INTERACTION_SCAN", "ANIMATION_PLAYER", "SLIDE_TIMER")]
 top_level = true
 collision_layer = 4
 collision_mask = 7
@@ -208,9 +232,10 @@ PIVOT_Y = NodePath("PivotY")
 PIVOT_X = NodePath("PivotY/PivotX")
 EYE = NodePath("PivotY/PivotX/Eye")
 WEAPON = NodePath("PivotY/PivotX/Weapon")
-PROJECTILE_START_POINT = NodePath("PivotY/PivotX/Eye/Projectile Start Point")
+PROJECTILE_START_POINT = NodePath("PivotY/PivotX/Eye/HitScan/Projectile Start Point")
+HIT_SCAN = NodePath("PivotY/PivotX/Eye/HitScan")
+INTERACTION_SCAN = NodePath("PivotY/PivotX/Eye/InteractionScan")
 ANIMATION_PLAYER = NodePath("AnimationPlayer")
-SHAPE_CAST = NodePath("CrouchCast")
 SLIDE_TIMER = NodePath("SlideTimer")
 
 [node name="Hud" type="CanvasLayer" parent="."]
@@ -309,17 +334,27 @@ unique_name_in_owner = true
 [node name="PivotX" type="Node3D" parent="PivotY"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
+[node name="Weapon" parent="PivotY/PivotX" instance=ExtResource("4_xh4xr")]
+
 [node name="Eye" type="Camera3D" parent="PivotY/PivotX"]
 fov = 90.0
 
-[node name="Projectile Start Point" type="Marker3D" parent="PivotY/PivotX/Eye"]
+[node name="HitScan" type="RayCast3D" parent="PivotY/PivotX/Eye"]
+target_position = Vector3(0, 0, -1000)
+
+[node name="Projectile Start Point" type="Marker3D" parent="PivotY/PivotX/Eye/HitScan"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.740192)
 
-[node name="Weapon" parent="PivotY/PivotX" instance=ExtResource("4_xh4xr")]
+[node name="InteractionScan" type="RayCast3D" parent="PivotY/PivotX/Eye"]
+target_position = Vector3(0, 0, -1)
+
+[node name="AudioListener3D" type="AudioListener3D" parent="PivotY/PivotX"]
+current = true
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
 shape = SubResource("CapsuleShape3D_yrsj2")
+debug_color = Color(0.742923, 0.213669, 1, 0.42)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -327,13 +362,15 @@ libraries = {
 }
 
 [node name="CrouchCast" type="ShapeCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("SphereShape3D_xh4xr")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("SphereShape3D_yngd5")
 target_position = Vector3(0, 1, 0)
+debug_shape_custom_color = Color(0, 0.66, 0.462, 1)
 
 [node name="FallCast" type="ShapeCast3D" parent="."]
 unique_name_in_owner = true
 shape = SubResource("CylinderShape3D_yngd5")
+debug_shape_custom_color = Color(0.660759, 0, 0.218441, 1)
 
 [node name="SlideTimer" type="Timer" parent="."]
 wait_time = 1.5
@@ -345,30 +382,20 @@ metadata/_custom_type_script = "uid://bwgd13rtk8ahm"
 
 [node name="IdlePlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("6_5u2jg")
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://dk8hjl1nfajy8"
 
 [node name="RunningPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("7_5u2jg")
-TOP_ANIM_SPEED = null
-SPEED = null
-ACCELERATION = null
-FRICTION = null
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://5nk44o5so0pj"
 
 [node name="AirPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("8_xnekc")
-SPEED = null
 JUMP_VELOCITY = 0.0
 metadata/_custom_type_script = "uid://47xkbi218kn7"
 
 [node name="CrouchedPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("SHAPE_CAST")]
 script = ExtResource("9_yngd5")
-CROUCHING_SPEED = null
-SPEED = null
-ACCELERATION = null
-FRICTION = null
 SHAPE_CAST = NodePath("../../CrouchCast")
-JUMP_VELOCITY = null
 metadata/_custom_type_script = "uid://bf7qr1njka30q"
+
+[connection signal="crosshair" from="PivotY/PivotX/Weapon" to="Hud" method="set_crosshair"]

@@ -20,7 +20,7 @@ func _ready() -> void:
 	curr_menu.connect("Load_Level", load_level)
 
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("Menu"):
+	if Input.is_action_just_pressed("ui_menu"):
 		if %MenuItems.visible:
 			curr_menu.back()
 		else:
@@ -64,10 +64,11 @@ func load_level(level: PackedScene) -> void:
 
 func set_level(node: Node3D) -> void:
 	if LEVEL:
-		remove_child(LEVEL)
 		LEVEL.queue_free()
+		remove_child(LEVEL)
 	
 	LEVEL = node
+	#await node.ready
 	add_child(LEVEL)
 	set_menu(%MenuItems/MainMenu)
 	menu_off()

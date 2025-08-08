@@ -12,5 +12,5 @@ func physics_update(delta: float) -> void:
 		transition.emit("CrouchedPlayerState")
 		return
 	if PLAYER.is_on_floor():
-		transition.emit("RunningPlayerState")
+		transition.emit("IdlePlayerState")
 		return

@@ -9,12 +9,17 @@ signal MenuOff
 @export var HUD: CanvasLayer
 @export var PIVOT_Y: Node3D
 @export var PIVOT_X: Node3D
-@export var EYE: Camera3D
+@export var EYE: Camera3D:
+	set(v):
+		EYE = v
+		DEFAULT_FOV = v.fov
 @export var WEAPON: WeaponScene
 @export var PROJECTILE_START_POINT: Marker3D
+@export var HIT_SCAN: RayCast3D
+@export var INTERACTION_SCAN: RayCast3D
 @export var ANIMATION_PLAYER: AnimationPlayer
-@export var SHAPE_CAST: ShapeCast3D
 @export var SLIDE_TIMER: Timer
+var DEFAULT_FOV: float
 
 @export_category("Movement")
 var speed := 7.0
@@ -22,10 +27,13 @@ var acceleration := 2.0
 var friction := 3.0
 @export var JUMP_STRENGTH := 4.5
 @export var AIR_ACCELERATION_MULTIPLIER := 1.0
-@export var SENS_X_100K := 200.0
+@export var SENS_X_100K := 200.0:
+	set(v):
+		SENS_X_100K = v
+		sensitivity = v/100000
 
 var gravity: Vector3
-var sensitivity: float
+var sensitivity := SENS_X_100K/100000
 #var is_crouching := false
 #var set_crouching := false
 
@@ -50,13 +58,7 @@ func _ready() -> void:
 	
 	# Set Camera
 	EYE.make_current()
-	#HUD.show()
-	
-	# Set Gravity
-	#gravity = NewGravity
-	
-	# Modify sensitivity
-	sensitivity = SENS_X_100K/100000
+	HUD.show()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -71,15 +73,17 @@ func _input(event: InputEvent) -> void:
 func look(look_dir: Vector2) -> void:
 	PIVOT_Y.rotate_y(-look_dir.x * sensitivity)
 	PIVOT_X.rotate_x(-look_dir.y * sensitivity)
-	PIVOT_X.rotation.x = clamp(PIVOT_X.rotation.x, -PI/2, PI/2)
-
-func _process(_delta: float) -> void:
-	
-	if is_processing_input() and Input.is_action_just_pressed("Attack"):
-		pass#WEAPON.fire(PROJECTILE_START_POINT)
+	PIVOT_X.rotation_degrees.x = clampf(PIVOT_X.rotation_degrees.x, -90, 90)
+	WEAPON.x_rot = PIVOT_X.rotation_degrees.x / 90
 
 func _physics_process(delta: float) -> void:
 	point_weapon()
+	var zoom_speed := 3.0
+	if Input.is_action_pressed("Attack"): WEAPON.attack()
+	if Input.is_action_pressed("Zoom"):
+		EYE.fov = lerpf(EYE.fov, 10, clampf(zoom_speed * delta, 0.0, 1.0))
+	elif EYE.fov != DEFAULT_FOV:
+		EYE.fov = lerpf(EYE.fov, DEFAULT_FOV, clampf(zoom_speed * delta, 0.0, 1.0))
 
 func rotate_to_gravity() -> void:
 	var gravity2 = get_gravity()
@@ -97,15 +101,10 @@ func rotate_to_gravity() -> void:
 	#print(global_rotation_degrees)
 
 func point_weapon() -> void:
-	var center := get_viewport().size / 2 as Vector2i
-	var origin := EYE.project_ray_origin(center)
-	var end := origin + EYE.project_ray_normal(center) * 1000
-	var query := PhysicsRayQueryParameters3D.create(origin, end)
-	var result = EYE.get_world_3d().direct_space_state.intersect_ray(query).get("position")
-	if result == null:
-		WEAPON.facing_this_point = (1000 * -EYE.global_transform.basis.z) + EYE.global_position
-		return
-	WEAPON.facing_this_point = result
+	if HIT_SCAN.is_colliding():
+		WEAPON.facing_this_point = HIT_SCAN.get_collision_point()
+	else:
+		WEAPON.facing_this_point = (1000 * -HIT_SCAN.global_transform.basis.z) + HIT_SCAN.global_position
 
 func get_horisontal_direction() -> Vector3:
 	var direction := Vector3.ZERO

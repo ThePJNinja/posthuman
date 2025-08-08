@@ -11,21 +11,24 @@ func enter() -> void:
 	PLAYER_ANIMATION_PLAYER.play("Crouch", -1.0, CROUCHING_SPEED)
 
 func physics_update(delta: float) -> void:
-	PLAYER.rotate_to_gravity()
+	var is_jumping := Input.is_action_pressed("Jump") and !(PLAYER_ANIMATION_PLAYER.current_animation == "Crouch" and PLAYER_ANIMATION_PLAYER.is_playing())
 	if PLAYER.is_on_floor():
 		move(delta, SPEED, ACCELERATION, FRICTION)
-		if Input.is_action_pressed("Jump") and !(PLAYER_ANIMATION_PLAYER.current_animation == "Crouch" and PLAYER_ANIMATION_PLAYER.is_playing()): jump()
-	elif FALL_CAST.is_colliding() and !Input.is_action_pressed("Jump"):
-		PLAYER.apply_floor_snap()
-		move(delta, SPEED, ACCELERATION, FRICTION)
-		if Input.is_action_pressed("Jump") and !(PLAYER_ANIMATION_PLAYER.current_animation == "Crouch" and PLAYER_ANIMATION_PLAYER.is_playing()): jump()
+		if is_jumping: jump()
+		PLAYER.move_and_slide()
+		PLAYER.rotate_to_gravity()
+		if !PLAYER.is_on_floor():
+			if FALL_CAST.is_colliding() and !is_jumping:
+				PLAYER.apply_floor_snap()
 	else:
 		move_air(delta, SPEED)
 		PLAYER.apply_gravity(delta)
-	PLAYER.move_and_slide()
+		PLAYER.move_and_slide()
+		PLAYER.rotate_to_gravity()
 	
 	if Input.is_action_just_released("Crouch (Hold)") or Input.is_action_just_pressed("Crouch (Toggle)"):
 		uncrouch()
+		return
 
 func uncrouch() -> void:
 	if !SHAPE_CAST.is_colliding() and !Input.is_action_pressed("Crouch (Hold)"):
