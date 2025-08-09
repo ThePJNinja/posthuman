@@ -35,7 +35,8 @@ func uncrouch() -> void:
 		PLAYER_ANIMATION_PLAYER.play("Crouch", -1.0, -CROUCHING_SPEED * 1.5, true)
 		if PLAYER_ANIMATION_PLAYER.is_playing(): 
 			await PLAYER_ANIMATION_PLAYER.animation_finished
-		transition.emit("RunningPlayerState")
+		if PLAYER.is_on_floor(): transition.emit("IdlePlayerState")
+		else: transition.emit("AirPlayerState")
 	else:
 		await get_tree().create_timer(0.1).timeout
 		uncrouch()

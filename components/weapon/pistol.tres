@@ -13,6 +13,7 @@ position = Vector3(0.2, -0.2, -0.4)
 rotation = Vector3(0, 90, 0)
 mesh = ExtResource("2_2576f")
 crosshair = ExtResource("1_yimma")
+zoom_fov = 30.0
 sway_min = Vector2(-120, -120)
 sway_max = Vector2(120, 120)
 sway_speed_position = 0.07

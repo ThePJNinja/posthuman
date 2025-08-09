@@ -44,7 +44,7 @@ func attack() -> void:
 	instance.top_level = true
 	add_child(instance)
 	instance.global_position = facing_this_point
-	ANIMATION_PLAYER.play("Recoil", -1, 1 / C_WEAPON.refire_time)
+	ANIMATION_PLAYER.play("Recoil", -1, (1 / C_WEAPON.refire_time) + 0.1)
 	AUDIO_PLAYER.pitch_scale = remap(randf(), 0, 1, 0.8, 1.2)
 	AUDIO_PLAYER.play()
 	await get_tree().create_timer(3.0).timeout

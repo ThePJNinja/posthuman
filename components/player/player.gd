@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 	var zoom_speed := 3.0
 	if Input.is_action_pressed("Attack"): WEAPON.attack()
 	if Input.is_action_pressed("Zoom"):
-		EYE.fov = lerpf(EYE.fov, 10, clampf(zoom_speed * delta, 0.0, 1.0))
+		EYE.fov = lerpf(EYE.fov, WEAPON.C_WEAPON.zoom_fov, clampf(zoom_speed * delta, 0.0, 1.0))
 	elif EYE.fov != DEFAULT_FOV:
 		EYE.fov = lerpf(EYE.fov, DEFAULT_FOV, clampf(zoom_speed * delta, 0.0, 1.0))
 
